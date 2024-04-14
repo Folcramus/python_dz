@@ -5,9 +5,9 @@ b = [Item("Легенда1", 12, 12, 12, 120), Item("Сигмоид1", 45, 45, 1
 
 gh = [Item("Легенда1", 12, 12, 12, 1)]
 
-lj = Store(b)
+lj = Store(b, 0)
 
-order = Order("Новый" ,b, "12",  None, None, None)
+order = Order("Новый" ,b, "12",  None, None, None, 100)
 
 
 fgf = User("Sigma", 12, [order])
