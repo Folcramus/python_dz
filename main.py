@@ -2,25 +2,7 @@ from dataclasses import dataclass
 import time
 from typing import Optional
 
-
-@dataclass
-class Item:
-    name: str
-    id: int
-    id_prov: int
-    price: int
-    count: int
-
-
-@dataclass
-class Order:
-    status: str
-    list_items: list[Item]
-    time_create: str
-    time_delivery: str | None
-    collector: str | None
-    courier: str | None
-    address: int
+from item_order import Item, Order
 
 
 class Worker:
@@ -35,7 +17,10 @@ class Worker:
 
     def get_order(self, type: str, time: float) -> bool:
         if self.type == type and self.is_empl == True:
-            self.minute_work -= time
+            if self.type == "курьер":
+                self.minute_work -= time*2
+            else:
+                self.minute_work -= time
             if self.minute_work <= 0:
                 self.close_work()
             return True
@@ -59,13 +44,14 @@ class Worker:
 
 class Store:
     __list_item: list[Item] = [None]
-    __work_item: list[Worker] = None
+    __work_item: list[Worker] = [None]
     __address: int
 
 
-    def __init__(self, list_item: list[Item], address: int):
+    def __init__(self, list_item: list[Item], address: int, worker: list):
         self.__list_item += list_item
         self.address = address
+        self.__work_item  += worker
 
     def send_request(self, request_item: list):
         prov = Provider()
@@ -95,11 +81,12 @@ class Store:
     def take_order(self, order: Order) -> bool:
         order.status = "Собираем"
         print(order)
-
+        if self.__work_item[0] is None:
+            self.__work_item.pop(0)
         worker = None
         time = len(order.list_items) * 45
         time = time % 3600
-        time_res = time // 60
+        time_res = time / 60
         for work in self.__work_item:
             if work.get_order("сборщик", time_res):
                 worker = work
