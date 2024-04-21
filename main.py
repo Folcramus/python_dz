@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 import time
 from typing import Optional
-
+from datetime import timedelta, datetime
 from item_order import Item, Order
 
 
@@ -79,8 +79,12 @@ class Store:
     # send_request - отправить заказ для провайдера (что привезти)
 
     def take_order(self, order: Order) -> bool:
-        order.status = "Собираем"
-        print(order)
+
+        time = (order.address / 2) + 1
+        temptime =datetime.strptime(order.time_create, "%H:%M:%S")  + timedelta(minutes=time)
+        restime = temptime - datetime.strptime(order.time_create, "%H:%M:%S")
+        order.time_delivery = restime
+
         if self.__work_item[0] is None:
             self.__work_item.pop(0)
         worker = None
@@ -91,6 +95,8 @@ class Store:
             if work.get_order("сборщик", time_res):
                 worker = work
         self.set_storekeeper(order, worker)
+        order.status = "Собираем"
+        print(order)
         for item in order.list_items:
             id_prov = item.id_prov
             index_prov = False
@@ -99,7 +105,7 @@ class Store:
             for i, obj in enumerate(self.__list_item):
                 if obj.id_prov == id_prov:
                     self.update_stocks(self.__list_item[i], item.count, False)
-        time = order.address / 2
+
         for couriiers in self.__work_item:
 
             if couriiers.get_order("курьер", time + 1.0):
@@ -145,7 +151,7 @@ class User:
     __order: list[Order]
 
     def make_order(self, items: list[Item], store: Store):
-        ordering = Order("новый", items, time.strftime("%H.%M.%S", time.localtime()), None, None, None, self.__address)
+        ordering = Order("новый", items, time.strftime("%H:%M:%S", time.localtime()), None, None, None, self.__address)
         self.__order.append(ordering)
 
         booling = store.take_order(ordering)
