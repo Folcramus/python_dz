@@ -9,16 +9,16 @@ class Worker:
     id: id
     name: str
     salary: int | None
-    type: str
+    type: str | None
     distance: int | None
     is_empl: bool
-    minute_work: int
-    time_work: int
+    minute_work: int | None
+    time_work: int | None
 
     def get_order(self, type: str, time: float) -> bool:
-        if self.type == type and self.is_empl == True:
+        if self.type == type and self.is_empl == True and self.minute_work >= time:
             if self.type == "курьер":
-                self.minute_work -= time * 2
+                self.minute_work -= time
             else:
                 self.minute_work -= time
             if self.minute_work <= 0:
@@ -30,18 +30,20 @@ class Worker:
 
     # принять заказ, если возможно
 
-    def get_shift(self, type: str):
-        self.__type = type
+    def get_shift(self, type: str, time: int):
+        self.minute_work = self.time_work = time
+        self.type = type
+        self.is_empl = True
 
     def close_work(self):
         self.salary = 5 * self.time_work
         self.is_empl = False
 
-    def __init__(self, id: int, name: str, type: str, time: int):
+    def __init__(self, id: int, name: str, type: str | None, time: int | None):
         self.id = id
         self.name = name
         self.type = type
-        self.is_empl = True
+        self.is_empl = False
         self.minute_work = time
         self.time_work = time
 
@@ -56,7 +58,7 @@ class Store:
         self.address = address
         self.__work_item += worker
 
-    def send_request(self):
+    def send_request(self) -> list:
         prov = Provider()
         res_item = prov.send_order(self.__list_item)
 
@@ -72,10 +74,21 @@ class Store:
             item.count += count
         else:
             if item.count == 0:
-                self.send_request()
-                item.count -= count
+                print(f"товара  {item} нет на складе, хотите отменить заказ? y/n")
+                s = input()
+                if self.close_order(s):
+                    self.send_request()
+                    item.count -= count
+                else:
+                    exit()
             else:
                 item.count -= count
+
+    def close_order(self, s: str) -> bool:
+        if s in "y":
+            return False
+        else:
+            return True
 
 
     # send_request - отправить заказ для провайдера (что привезти)
@@ -137,6 +150,8 @@ class Store:
         for item in self.__list_item:
             if item.id == id:
                 return item
+    def __str__(self):
+        return f'список товаров {self.__list_item}'
 
 
 # Что должно быть? Id внутри системы складов, id внутри системы поставщика, название, себестоимость

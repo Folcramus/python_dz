@@ -11,17 +11,18 @@ while True:
         username = input()
         address = input()
         user = User(username, int(address), None)
-        items = [Item("Молоко", 1, 1, 120, 0), Item("Хлеб", 2, 2, 12, 34), Item("Говядина", 3, 3, 12, 230)]
-        store = Store(items, 0, [Worker(0, "Антон", "курьер", 120), Worker(1, "Георгий", "сборщик", 120)])
+        items = [Item("Молоко", 1, 1, 120, 3), Item("Хлеб", 2, 2, 12, 3), Item("Говядина", 3, 3, 12, 2)]
+        items2  = [Item("Молоко", 1, 1, 120, 0), Item("Хлеб", 2, 2, 12, 34), Item("Говядина", 3, 3, 12, 230)]
+
+        workers = [Worker(0, "Антон", None, None), Worker(1, "Георгий", None, None),  Worker(2, "Анатолий", None, None)]
+        workers[0].get_shift("курьер", 130)
+        workers[2].get_shift("сборщик", 100)
+        store = Store(items2, 0, workers)
+        print(store)
         print("Доступный вам склад: ")
-        print(*items)
-        print("выберите заказы написав номера, если вы хотите закончить выбор то вбейте yes")
-        s = input()
-        order_list = []
-        while s != 'yes':
-            order_list.append(store.search_item(int(s)))
-            s = input()
-        user.make_order(order_list, store)
+        print(store)
+        user.make_order(items, store)
+        print(store)
     else:
         break
 
