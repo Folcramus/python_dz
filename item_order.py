@@ -10,6 +10,10 @@ class Item:
     count: int
 
 
+    def __str__(self):
+        return f'номер: {self.id}, название: {self.name}, количество: {self.count}, цена: {self.price}   '
+
+
 @dataclass
 class Order:
     status: str
@@ -19,3 +23,7 @@ class Order:
     collector: str | None
     courier: str | None
     address: int
+
+
+    def __str__(self):
+        return f'список: {self.list_items}, время создания: {self.time_create}, время доставки: {self.time_delivery}, сборщик: {self.collector} , курьер: {self.courier}, адрес доставки {self.address} '

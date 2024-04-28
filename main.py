@@ -10,7 +10,7 @@ class Worker:
     name: str
     salary: int | None
     type: str
-    distance: int| None
+    distance: int | None
     is_empl: bool
     minute_work: int
     time_work: int
@@ -18,7 +18,7 @@ class Worker:
     def get_order(self, type: str, time: float) -> bool:
         if self.type == type and self.is_empl == True:
             if self.type == "курьер":
-                self.minute_work -= time*2
+                self.minute_work -= time * 2
             else:
                 self.minute_work -= time
             if self.minute_work <= 0:
@@ -33,7 +33,8 @@ class Worker:
     def close_work(self):
         self.salary = 5 * self.time_work
         self.is_empl = False
-    def __init__(self, id: int, name: str,  type: str, time: int):
+
+    def __init__(self, id: int, name: str, type: str, time: int):
         self.id = id
         self.name = name
         self.type = type
@@ -47,11 +48,10 @@ class Store:
     __work_item: list[Worker] = [None]
     __address: int
 
-
     def __init__(self, list_item: list[Item], address: int, worker: list):
         self.__list_item += list_item
         self.address = address
-        self.__work_item  += worker
+        self.__work_item += worker
 
     def send_request(self, request_item: list):
         prov = Provider()
@@ -63,7 +63,7 @@ class Store:
             index_prov = False
             for i, obj in enumerate(self.__list_item):
                 if obj.id_prov == id_prov:
-                    self.update_stocks(self.__list_item[i], item[1], True)
+                    self.update_stocks(self.__list_item[i], 100, True)
                     index_prov = True
                     break
 
@@ -75,31 +75,36 @@ class Store:
         if flag:
             item.count += count
         else:
-            item.count -=count
+            if item.count == 0:
+                self.send_request(self.__list_item)
+                item.count -= count
+            else:
+                item.count -= count
+
+
     # send_request - отправить заказ для провайдера (что привезти)
 
     def take_order(self, order: Order) -> bool:
 
-        time = (order.address / 2) + 1
-        temptime =datetime.strptime(order.time_create, "%H:%M:%S")  + timedelta(minutes=time)
-        restime = temptime - datetime.strptime(order.time_create, "%H:%M:%S")
-        order.time_delivery = restime
+        time = len(order.list_items) * 45
+        time = time % 3600
+        time_res1 = time / 60
+        time_res = time_res1
+        time_res += (order.address / 2) + 2
+        order.time_delivery = time_res
 
         if self.__work_item[0] is None:
             self.__work_item.pop(0)
         worker = None
-        time = len(order.list_items) * 45
-        time = time % 3600
-        time_res = time / 60
+
         for work in self.__work_item:
-            if work.get_order("сборщик", time_res):
+            if work.get_order("сборщик", time_res1):
                 worker = work
         self.set_storekeeper(order, worker)
         order.status = "Собираем"
         print(order)
         for item in order.list_items:
             id_prov = item.id_prov
-            index_prov = False
             if self.__list_item[0] is None:
                 self.__list_item.pop(0)
             for i, obj in enumerate(self.__list_item):
@@ -108,7 +113,7 @@ class Store:
 
         for couriiers in self.__work_item:
 
-            if couriiers.get_order("курьер", time + 1.0):
+            if couriiers.get_order("курьер", (order.address / 2) + 2.0):
                 courier = couriiers
                 self.set_courier(order, courier)
                 order.status = "Выдан курьеру"
@@ -120,9 +125,6 @@ class Store:
     def set_courier(self, order: Order, courier: Worker):
         order.courier = courier
 
-
-
-
     # дать заказу курьера
 
     def set_storekeeper(self, order: Order, worker: Worker):
@@ -132,6 +134,13 @@ class Store:
 
     def get_worker(self, worker: Worker):
         self.__work_item.append(worker)
+
+    def search_item(self, id: int) -> Item:
+        if self.__list_item[0] is None:
+            self.__list_item.pop(0)
+        for item in self.__list_item:
+            if item.id == id:
+                return item
 
 
 # Что должно быть? Id внутри системы складов, id внутри системы поставщика, название, себестоимость
@@ -148,7 +157,7 @@ class Provider:  # поставщик
 class User:
     __name: str
     __address: int
-    __order: list[Order]
+    __order: list | None
 
     def make_order(self, items: list[Item], store: Store):
         ordering = Order("новый", items, time.strftime("%H:%M:%S", time.localtime()), None, None, None, self.__address)
@@ -166,7 +175,7 @@ class User:
 
     # забрать заказ
 
-    def __init__(self, name: str, address: int, order: list[Order]):
+    def __init__(self, name: str, address: int, order: list | None):
         self.__name = name
         self.__address = address
         self.__order = order
