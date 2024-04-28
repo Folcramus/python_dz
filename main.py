@@ -25,6 +25,9 @@ class Worker:
                 self.close_work()
             return True
 
+    def __repr__(self):
+        return f'имя: {self.name}    должность: {self.type}  на смене {self.is_empl} время работы {self.time_work} оставшиеся время: {self.minute_work} '
+
     # принять заказ, если возможно
 
     def get_shift(self, type: str):
