@@ -53,22 +53,15 @@ class Store:
         self.address = address
         self.__work_item += worker
 
-    def send_request(self, request_item: list):
+    def send_request(self):
         prov = Provider()
-        res_item = prov.send_order(request_item)
-        self.__list_item.pop(0)
+        res_item = prov.send_order(self.__list_item)
 
         for item in res_item:
-            id_prov = item[0]
-            index_prov = False
-            for i, obj in enumerate(self.__list_item):
-                if obj.id_prov == id_prov:
-                    self.update_stocks(self.__list_item[i], 100, True)
-                    index_prov = True
-                    break
-
-            if not index_prov:
-                self.__list_item.append(item)
+            index = 0
+            for item in self.__list_item:
+                if item.count == 0:
+                    self.update_stocks(self.__list_item[index], 100, True)
         return self.__list_item
 
     def update_stocks(self, item: Item, count: int, flag: bool):
@@ -76,7 +69,7 @@ class Store:
             item.count += count
         else:
             if item.count == 0:
-                self.send_request(self.__list_item)
+                self.send_request()
                 item.count -= count
             else:
                 item.count -= count
@@ -157,11 +150,11 @@ class Provider:  # поставщик
 class User:
     __name: str
     __address: int
-    __order: list | None
+    __order: Order | None
 
     def make_order(self, items: list[Item], store: Store):
         ordering = Order("новый", items, time.strftime("%H:%M:%S", time.localtime()), None, None, None, self.__address)
-        self.__order.append(ordering)
+        self.__order = ordering
 
         booling = store.take_order(ordering)
         if booling:
@@ -170,12 +163,12 @@ class User:
     # сделать заказ
 
     def take_order(self):
-        self.__order[-1].status = "Выдан"
-        print(self.__order[-1])
+        self.__order.status = "Выдан"
+        print(self.__order)
 
     # забрать заказ
 
-    def __init__(self, name: str, address: int, order: list | None):
+    def __init__(self, name: str, address: int, order: Order | None):
         self.__name = name
         self.__address = address
         self.__order = order

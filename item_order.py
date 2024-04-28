@@ -26,4 +26,4 @@ class Order:
 
 
     def __str__(self):
-        return f'список: {self.list_items}, время создания: {self.time_create}, время доставки: {self.time_delivery}, сборщик: {self.collector} , курьер: {self.courier}, адрес доставки {self.address} '
+        return f'статус: {self.status}, список: {self.list_items}, время создания: {self.time_create}, время доставки: {self.time_delivery}, сборщик: {self.collector} , курьер: {self.courier}, адрес доставки {self.address} '
