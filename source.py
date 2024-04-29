@@ -1,6 +1,11 @@
-from main import Item, Store, User, Order, Worker
+
 import copy
 import time
+
+from Store import Store
+from User import User
+from Worker import Worker
+from item_order import Item
 
 time.sleep(1)
 
