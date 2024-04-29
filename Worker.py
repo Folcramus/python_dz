@@ -1,7 +1,10 @@
+import random
+
+
 class Worker:
     id: id
     name: str
-    salary: int | None
+    salary: int
     type: str | None
     distance: int | None
     is_empl: bool
@@ -28,6 +31,14 @@ class Worker:
         self.type = type
         self.is_empl = True
 
+    def fine_worker(self) -> bool:
+        rand = random.randint(0, 100)
+        if rand >= 98:
+            self.salary -= 300
+            return True
+        else:
+            return False
+
     def close_work(self):
         self.salary = 5 * self.time_work
         self.is_empl = False
@@ -37,5 +48,6 @@ class Worker:
         self.name = name
         self.type = type
         self.is_empl = False
+        self.salary = 0
         self.minute_work = time
         self.time_work = time

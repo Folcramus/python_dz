@@ -1,17 +1,25 @@
 from Worker import Worker
 from item_order import Item, Order
 from main import Provider
-
+from datetime import time
 
 class Store:
+    __id: int
     __list_item: list[Item] = [None]
     __work_item: list[Worker] = [None]
     __address: int
+    __time_open: str
+    __time_close: str
+    __time_work: bool | None
 
-    def __init__(self, list_item: list[Item], address: int, worker: list):
-        self.__list_item += list_item
-        self.address = address
-        self.__work_item += worker
+    def __init__(self, id: int, list_item: list[Item], address: int, worker: list, open: str, close: str, time_work: bool | None):
+        self.__id = id
+        self.__list_item = list_item
+        self.__address = address
+        self.__work_item = worker
+        self.__time_open = open
+        self.__time_close = close
+        self.__time_work = time_work
 
     def send_request(self) -> list:
         prov = Provider()
@@ -44,7 +52,6 @@ class Store:
             return False
         else:
             return True
-
 
     # send_request - отправить заказ для провайдера (что привезти)
 
@@ -79,10 +86,13 @@ class Store:
 
             if couriiers.get_order("курьер", (order.address / 2) + 2.0):
                 courier = couriiers
-                self.set_courier(order, courier)
-                order.status = "Выдан курьеру"
-                print(order)
-                return True
+                if courier.fine_worker():
+                    self.set_courier(order, courier)
+                    order.status = "Выдан курьеру"
+                    print(order)
+                    return True
+                else:
+                    print(f'курьеру {courier.name} назначен штраф')
 
     # принять заказ и начать его обрабатывать
 
@@ -105,5 +115,26 @@ class Store:
         for item in self.__list_item:
             if item.id == id:
                 return item
+
+
+
+
+
+    def store_id(self) -> int:
+        return self.__id
+
+    def store_open(self) -> str:
+        return self.__time_open
+
+    def store_close(self) -> str:
+        return self.__time_close
+
+    def store_address(self) -> int:
+        return self.__address
+
+    def store_time_work(self) -> bool:
+        return self.__time_work
     def __str__(self):
         return f'список товаров {self.__list_item}'
+
+

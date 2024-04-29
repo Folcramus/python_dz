@@ -11,7 +11,7 @@ class User:
     __order: Order | None
 
     def make_order(self, items: list[Item], store: Store):
-        ordering = Order("новый", items, time.strftime("%H:%M:%S", time.localtime()), None, None, None, self.__address)
+        ordering = Order("новый", items, time.strftime("%I:%M%p", time.localtime()), None, None, None, self.__address)
         self.__order = ordering
 
         booling = store.take_order(ordering)
@@ -25,6 +25,9 @@ class User:
         print(self.__order)
 
     # забрать заказ
+
+    def user_address(self):
+        return self.__address
 
     def __init__(self, name: str, address: int, order: Order | None):
         self.__name = name
