@@ -3,6 +3,7 @@ from item_order import Item, Order
 from main import Provider
 from datetime import time
 
+
 class Store:
     __id: int
     __list_item: list[Item] = [None]
@@ -12,7 +13,8 @@ class Store:
     __time_close: str
     __time_work: bool | None
 
-    def __init__(self, id: int, list_item: list[Item], address: int, worker: list, open: str, close: str, time_work: bool | None):
+    def __init__(self, id: int, list_item: list[Item], address: int, worker: list, open: str, close: str,
+                 time_work: bool | None):
         self.__id = id
         self.__list_item = list_item
         self.__address = address
@@ -116,10 +118,6 @@ class Store:
             if item.id == id:
                 return item
 
-
-
-
-
     def store_id(self) -> int:
         return self.__id
 
@@ -134,7 +132,6 @@ class Store:
 
     def store_time_work(self) -> bool:
         return self.__time_work
+
     def __str__(self):
         return f'список товаров {self.__list_item}'
-
-

@@ -4,7 +4,7 @@ import random
 class Worker:
     id: id
     name: str
-    salary: int
+    salary: float
     type: str | None
     distance: int | None
     is_empl: bool
@@ -17,8 +17,8 @@ class Worker:
                 self.minute_work -= time
             else:
                 self.minute_work -= time
-            if self.minute_work <= 0:
-                self.close_work()
+            if self.minute_work < time:
+                self.close_work(time)
             return True
 
     def __repr__(self):
@@ -39,8 +39,8 @@ class Worker:
         else:
             return False
 
-    def close_work(self):
-        self.salary = 5 * self.time_work
+    def close_work(self, time: float):
+        self.salary = 5 * self.time_work * (time / 60)
         self.is_empl = False
 
     def __init__(self, id: int, name: str, type: str | None, time: int | None):
