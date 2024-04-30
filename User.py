@@ -11,10 +11,10 @@ class User:
     __order: Order | None
 
     def make_order(self, items: list[Item], store: Store):
-        ordering = Order("новый", items, time.strftime("%I:%M%p", time.localtime()), None, None, None, self.__address)
-        self.__order = ordering
+        order = Order("новый", items, time.strftime("%I:%M%p", time.localtime()), None, None, None, self.__address)
+        self.__order = order
 
-        booling = store.take_order(ordering)
+        booling = store.take_order(order)
         if booling:
             self.take_order()
 
