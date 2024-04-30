@@ -14,7 +14,7 @@ class Worker(ABC):
     time_work: int | None
 
     @abstractmethod
-    def get_order(self,  time: float) -> bool:
+    def get_order(self, type: str,  time: float) -> bool:
         pass
 
     @abstractmethod
