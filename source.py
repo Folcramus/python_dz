@@ -5,7 +5,7 @@ import time
 
 from Store import Store
 from User import User
-from Worker import Worker
+from Worker import Worker, Courier, Storekeeper
 from item_order import Item
 
 time.sleep(1)
@@ -37,9 +37,9 @@ while True:
         items = [Item("Молоко", 1, 1, 120, 3), Item("Хлеб", 2, 2, 12, 3), Item("Говядина", 3, 3, 12, 2)]
         items2 = [Item("Молоко", 1, 1, 120, 0), Item("Хлеб", 2, 2, 12, 34), Item("Говядина", 3, 3, 12, 230)]
 
-        workers = [Worker(0, "Антон", None, None), Worker(1, "Георгий", None, None), Worker(2, "Анатолий", None, None)]
-        workers[0].get_shift("курьер", 130)
-        workers[2].get_shift("сборщик", 100)
+        workers = [Courier(0, "Антон", None, None), Courier(1, "Георгий", None, None), Storekeeper(2, "Анатолий", None, None)]
+        workers[0].get_shift(130)
+        workers[2].get_shift(100)
         time1 = datetime.now()
         curr_time = time1.strftime("%I:%M%p")
         store = [Store(1, items2, 0, workers, '3:00AM', '11:00PM',
