@@ -6,8 +6,8 @@ from datetime import time
 
 class Store:
     __id: int
-    __list_item: list[Item] = [None]
-    __work_item: list[Worker] = [None]
+    __list_item: list[Item]
+    __work_item: list[Worker]
     __address: int
     __time_open: str
     __time_close: str
@@ -58,14 +58,14 @@ class Store:
     # send_request - отправить заказ для провайдера (что привезти)
 
     def take_order(self, order: Order) -> bool:
-
+        # вычисление времени доставки
         time = len(order.list_items) * 45
         time = time % 3600
         time_res1 = time / 60
         time_res = time_res1
         time_res += (order.address / 2) + 2
         order.time_delivery = time_res
-
+        # назначение работника
         worker = None
 
         for work in self.__work_item:
@@ -74,19 +74,18 @@ class Store:
         self.set_storekeeper(order, worker)
         order.status = "Собираем"
         print(order)
+        # обновление стоков
         for item in order.list_items:
             id_prov = item.id_prov
-            if self.__list_item[0] is None:
-                self.__list_item.pop(0)
             for i, obj in enumerate(self.__list_item):
                 if obj.id_prov == id_prov:
                     self.update_stocks(self.__list_item[i], item.count, False)
-
+        # назначение работника
         for couriiers in self.__work_item:
 
             if couriiers.get_order("курьер", (order.address / 2) + 2.0):
                 courier = couriiers
-                if courier.fine_worker():
+                if courier.fine_worker() is False:
                     self.set_courier(order, courier)
                     order.status = "Выдан курьеру"
                     print(order)

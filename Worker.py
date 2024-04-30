@@ -48,6 +48,8 @@ class Courier(Worker):
             if self.minute_work < time:
                 self.close_work(time)
             return True
+        else:
+            return False
 
     def __repr__(self):
         return f'имя: {self.name}    должность: {self.type}  на смене {self.is_empl} время работы {self.time_work} оставшиеся время: {self.minute_work} '

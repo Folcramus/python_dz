@@ -21,8 +21,13 @@ class User:
     # сделать заказ
 
     def take_order(self):
-        self.__order.status = "Выдан"
-        print(self.__order)
+        print(f'{self.__name} вы получили заказ? y/n')
+        s = input()
+        if s == 'y':
+            self.__order.status = "Выдан"
+            print(self.__order)
+        else:
+            self.__order.status = "Заказ не выдан"
 
     # забрать заказ
 
