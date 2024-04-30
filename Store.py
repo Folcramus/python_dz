@@ -1,6 +1,6 @@
 from Worker import Worker
 from item_order import Item, Order
-from main import Provider
+from Provider import Provider
 from datetime import time
 
 
@@ -66,8 +66,6 @@ class Store:
         time_res += (order.address / 2) + 2
         order.time_delivery = time_res
 
-        if self.__work_item[0] is None:
-            self.__work_item.pop(0)
         worker = None
 
         for work in self.__work_item:
