@@ -11,6 +11,7 @@ from item_order import Item
 time.sleep(1)
 
 
+# вычисление нужного склада
 def findClosestValue(storeList, target):
     def difference(storeList):
         return abs(storeList - target)
@@ -20,6 +21,7 @@ def findClosestValue(storeList, target):
     return result
 
 
+# работа склада
 def isNowInTimePeriod(startTime, endTime, nowTime):
     if startTime < endTime:
         return startTime <= nowTime <= endTime
@@ -37,7 +39,8 @@ while True:
         items = [Item("Молоко", 1, 1, 120, 3), Item("Хлеб", 2, 2, 12, 3), Item("Говядина", 3, 3, 12, 2)]
         items2 = [Item("Молоко", 1, 1, 120, 0), Item("Хлеб", 2, 2, 12, 34), Item("Говядина", 3, 3, 12, 230)]
 
-        workers = [Courier(0, "Антон", None, None), Courier(1, "Георгий", None, None), Storekeeper(2, "Анатолий", None, None)]
+        workers = [Courier(0, "Антон", None, None), Courier(1, "Георгий", None, None),
+                   Storekeeper(2, "Анатолий", None, None)]
         workers[0].get_shift(130)
         workers[2].get_shift(100)
         time1 = datetime.now()
@@ -72,23 +75,3 @@ while True:
     else:
         break
 
-'''
-b = [Item("Легенда1", 12, 12, 12, 120), Item("Сигмоид1", 45, 45, 12, 10),  Item("Зигхаиль", 13, 13, 12, 10)]
-
-
-gh = [Item("Легенда1", 12, 12, 12, 1)]
-
-
-
-order = Order("Новый" ,b, "12",  None, None, None, 100)
-
-
-fgf = User("Sigma", 12, [order])
-
-
-
-print(fgf.make_order(gh,  Store(b, 0, [Worker(0, "Антон", "курьер", 120), Worker(1, "Георгий", "сборщик", 120)])))
-
-
-
-'''

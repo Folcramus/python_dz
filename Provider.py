@@ -7,7 +7,7 @@ from item_order import Item, Order
 
 # Что должно быть? Id внутри системы складов, id внутри системы поставщика, название, себестоимость
 class Provider:  # поставщик
-    def send_order(self, list_item: list):
+    def send_order(self, list_item: list) -> list:
         return_item = []
         for item in list_item:
             return_item.append(item)
