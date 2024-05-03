@@ -4,21 +4,22 @@ from abc import ABC, abstractmethod
 
 
 class Worker(ABC):
-    id: id
-    name: str
-    salary: float
-    type: str | None
-    distance: int | None
-    is_empl: bool
-    minute_work: int | None
-    time_work: int | None
+    __id: id
+    __name: str
+    __salary: float
+    __type: str | None
+    __distance: int | None
+    __is_empl: bool
+    __minute_work: int | None
+    __time_work: int | None
+    __is_working: bool
 
     @abstractmethod
-    def get_order(self, type: str,  time: float) -> bool:
+    def get_order(self, type: str, time: float, is_empl: bool) -> bool:
         pass
 
     @abstractmethod
-    def get_shift(self,  time: int):
+    def get_shift(self, time: int):
         pass
 
     @abstractmethod
@@ -29,78 +30,131 @@ class Worker(ABC):
     def fine_worker(self) -> bool:
         pass
 
-    def __init__(self, id: int, name: str, type: str | None, time: int | None):
-        self.id = id
-        self.name = name
-        self.type = type
-        self.is_empl = False
-        self.salary = 0
-        self.minute_work = time
-        self.time_work = time
+    @abstractmethod
+    def worker_name(self) -> str:
+        pass
+
+    @abstractmethod
+    def worker_is_empl(self) -> bool:
+        pass
 
 
 class Courier(Worker):
-    def get_order(self, type: str, time: float) -> bool:
-        if self.type == type and self.is_empl == True and self.minute_work >= time:
-
-            self.minute_work -= time
-
-            if self.minute_work < time:
-                self.close_work(time)
-            return True
-        else:
-            return False
 
     def __repr__(self):
-        return f'имя: {self.name}    должность: {self.type}  на смене {self.is_empl} время работы {self.time_work} оставшиеся время: {self.minute_work} '
+        return f'имя: {self.__name}    должность: {self.__type}  на смене {self.__is_empl} время работы {self.__time_work} оставшиеся время: {self.__minute_work}'
 
     # принять заказ, если возможно
+    def get_order(self, type: str, time: float, is_empl: bool) -> bool:
+        if self.__type == type and is_empl == True:
+            if not self.__is_working and self.__time_work >= time:
+                self.__minute_work -= time
+                self.__is_working = True
+                if self.__minute_work < time:
+                    self.close_work(time)
+                return True
+            else:
+                return False
+        else:
 
-    def get_shift(self,  time: int):
-        self.minute_work = self.time_work = time
-        self.type = "курьер"
-        self.is_empl = True
+            return False
+
+    def get_shift(self, time: int):
+        self.__minute_work = self.__time_work = time
+        self.__type = "курьер"
+        self.__is_empl = True
 
     def fine_worker(self) -> bool:
         rand = random.randint(0, 100)
         if rand >= 98:
-            self.salary -= 300
+            self.__salary -= 300
             return True
         else:
             return False
 
     def close_work(self, time: float):
-        self.salary = 5 * self.time_work * (time / 60)
-        self.is_empl = False
+        if self.__is_empl:
+            self.__salary = 5 * self.__time_work * (time / 60)
+            self.__is_empl = False
+            print(f'Работник {self.__name} Зарплата {self.__salary}')
+
+    def worker_name(self) -> str:
+        return f'{self.__name}'
+
+    def worker_is_empl(self) -> bool:
+        return self.__is_empl
+
+    def worker_is_working(self):
+        if self.__is_working:
+            self.__is_working = False
+        else:
+            self.__is_working = True
+
+    def __init__(self, id: int, name: str, type: str | None, time=1):
+        self.__id = id
+        self.__name = name
+        self.__is_empl = False
+        self.__salary = 0
+        self.__type = type
+        self.__minute_work = time
+        self.__time_work = time
+        self.__is_working = False
 
 
 class Storekeeper(Worker):
-    def get_order(self, type: str, time: float) -> bool:
-        if self.type == type and self.is_empl == True and self.minute_work >= time:
+    __type: str | None
 
-            self.minute_work -= time
-            if self.minute_work < time:
-                self.close_work(time)
-            return True
+    def get_order(self, type: str, time: float, is_empl: bool) -> bool:
+        if self.__type == type and is_empl == True:
+            if not self.__is_working and self.__time_work >= time:
+                self.__minute_work -= time
+                self.__is_working = True
+                if self.__minute_work < time:
+                    self.close_work(time)
+                return True
+            else:
+                return False
 
     def __repr__(self):
-        return f'имя: {self.name}    должность: {self.type}  на смене {self.is_empl} время работы {self.time_work} оставшиеся время: {self.minute_work} '
+        return f'имя: {self.__name}    должность: {self.__type}  на смене {self.__is_empl} время работы {self.__time_work} оставшиеся время: {self.__minute_work} '
 
     # принять заказ, если возможно
 
-    def get_shift(self,  time: int):
-        self.minute_work = self.time_work = time
-        self.type = "сборщик"
-        self.is_empl = True
+    def get_shift(self, time: int):
+        self.__minute_work = self.__time_work = time
+        self.__type = "сборщик"
+        self.__is_empl = True
 
     def fine_worker(self) -> bool:
         rand = random.randint(0, 100)
         if rand >= 98:
-            self.salary -= 300
+            self.__salary -= 300
             return True
         else:
             return False
 
     def close_work(self, time: float):
-        self.salary = 5 * self.time_work * (time / 60)
-        self.is_empl = False
+        self.__salary = 5 * self.__time_work * (time / 60)
+        self.__is_empl = False
+
+    def worker_name(self) -> str:
+        return f'{self.__name}'
+
+    def worker_is_empl(self) -> bool:
+        return self.__is_empl
+
+    def worker_is_working(self):
+        if self.__is_working:
+            self.__is_working = False
+        else:
+            self.__is_working = True
+
+    def __init__(self, id: int, name: str, type: str | None, time: int | None):
+        self.__id = id
+        self.__name = name
+        self.__is_empl = False
+        self.__salary = 0
+        self.__type = type
+        self.__minute_work = time
+        self.__time_work = time
+        self.__is_working = False

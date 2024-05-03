@@ -17,6 +17,8 @@ class User:
         booling = store.take_order(order)
         if booling:
             self.take_order()
+        else:
+            print(f'Заказ отменен из за занятости работников')
 
     # сделать заказ
 
@@ -26,6 +28,8 @@ class User:
         if s == 'y':
             self.__order.status = "Выдан"
             print(self.__order)
+            self.__order.courier.worker_is_working()
+            self.__order.collector.worker_is_working()
         else:
             self.__order.status = "Заказ не выдан"
 
@@ -38,3 +42,6 @@ class User:
         self.__name = name
         self.__address = address
         self.__order = order
+
+    def __str__(self):
+        return f'Имя: {self.__name}, адрес: {self.__address}, магазин: {self.__order}'

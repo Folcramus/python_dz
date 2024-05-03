@@ -1,4 +1,4 @@
-from Worker import Worker
+from Worker import Worker, Storekeeper, Courier
 from item_order import Item, Order
 from Provider import Provider
 from datetime import time
@@ -6,14 +6,14 @@ from datetime import time
 
 class Store:
     __id: int
-    __list_item: list[Item]
-    __work_item: list[Worker]
+    __list_item: list
+    __work_item: list
     __address: int
     __time_open: str
     __time_close: str
     __time_work: bool | None
 
-    def __init__(self, id: int, list_item: list[Item], address: int, worker: list, open: str, close: str,
+    def __init__(self, id: int, list_item: list, address: int, worker: list, open: str, close: str,
                  time_work: bool | None):
         self.__id = id
         self.__list_item = list_item
@@ -23,31 +23,10 @@ class Store:
         self.__time_close = close
         self.__time_work = time_work
 
-    def send_request(self) -> list:
+    def send_request(self):
         prov = Provider()
         res_item = prov.send_order(self.__list_item)
-
-        for item in res_item:
-            index = 0
-            for item in self.__list_item:
-                if item.count == 0:
-                    self.update_stocks(self.__list_item[index], 100, True)
-        return self.__list_item
-
-    def update_stocks(self, item: Item, count: int, flag: bool):
-        if flag:
-            item.count += count
-        else:
-            if item.count == 0:
-                print(f"товара  {item} нет на складе, хотите отменить заказ? y/n")
-                s = input()
-                if self.close_order(s):
-                    self.send_request()
-                    item.count -= count
-                else:
-                    exit()
-            else:
-                item.count -= count
+        self.__list_item = res_item
 
     def close_order(self, s: str) -> bool:
         if s in "y":
@@ -69,8 +48,10 @@ class Store:
         worker = None
 
         for work in self.__work_item:
-            if work.get_order("сборщик", time_res1):
+            if work.get_order("сборщик", time_res1, work.worker_is_empl()):
                 worker = work
+        if worker is None:
+            return False
         self.set_storekeeper(order, worker)
         order.status = "Собираем"
         print(order)
@@ -79,12 +60,11 @@ class Store:
             id_prov = item.id_prov
             for i, obj in enumerate(self.__list_item):
                 if obj.id_prov == id_prov:
-                    self.update_stocks(self.__list_item[i], item.count, False)
+                    self.update_stocks(self.__list_item[i], item.count)
         # назначение работника
-        for couriiers in self.__work_item:
+        for courier in self.__work_item:
 
-            if couriiers.get_order("курьер", (order.address / 2) + 2.0):
-                courier = couriiers
+            if courier.get_order("курьер", (order.address / 2) + 2.0, courier.worker_is_empl()):
                 if courier.fine_worker() is False:
                     self.set_courier(order, courier)
                     order.status = "Выдан курьеру"
@@ -93,6 +73,19 @@ class Store:
                 else:
                     print(f'курьеру {courier.name} назначен штраф')
 
+    def update_stocks(self, item: Item, count: int):
+
+        if item.count == 0:
+            print(f"товара  {item} нет на складе, хотите отменить заказ? y/n")
+            s = input()
+            if self.close_order(s):
+                self.send_request()
+                item.count -= count
+            else:
+                exit()
+        else:
+            item.count -= count
+
     # принять заказ и начать его обрабатывать
 
     def set_courier(self, order: Order, courier: Worker):
@@ -100,8 +93,8 @@ class Store:
 
     # дать заказу курьера
 
-    def set_storekeeper(self, order: Order, worker: Worker):
-        order.collector = worker
+    def set_storekeeper(self, order: Order, storekeeper: Storekeeper):
+        order.collector = storekeeper
 
     # дать заказу кладовщика
 
@@ -132,3 +125,6 @@ class Store:
 
     def __str__(self):
         return f'список товаров {self.__list_item}'
+
+    def __repr__(self):
+        return f'склад №: {self.__id}'

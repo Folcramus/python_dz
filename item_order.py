@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 
+from Worker import Courier, Storekeeper
+
 
 @dataclass
 class Item:
@@ -20,8 +22,8 @@ class Order:
     list_items: list
     time_create: str
     time_delivery: str | None
-    collector: str | None
-    courier: str | None
+    collector: Storekeeper | None
+    courier: Courier | None
     address: int
 
 
