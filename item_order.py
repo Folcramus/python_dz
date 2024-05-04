@@ -11,7 +11,6 @@ class Item:
     price: int
     count: int
 
-
     def __str__(self):
         return f'номер: {self.id}, название: {self.name}, количество: {self.count}, цена: {self.price}   '
 
@@ -26,6 +25,6 @@ class Order:
     courier: Courier | None
     address: int
 
-
     def __str__(self):
         return f'статус: {self.status}, список: {self.list_items}, время создания: {self.time_create}, время доставки: {self.time_delivery}, сборщик: {self.collector} , курьер: {self.courier}, адрес доставки {self.address} '
+

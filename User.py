@@ -4,24 +4,25 @@ import time
 from Store import Store
 from item_order import Order, Item
 
-
+#класс пользователя
 class User:
     __name: str
     __address: int
     __order: Order | None
-
+      # сделать заказ
     def make_order(self, items: list[Item], store: Store):
+        #создание объекта заказа
         order = Order("новый", items, time.strftime("%I:%M%p", time.localtime()), None, None, None, self.__address)
         self.__order = order
-
+        #выполнение заказа
         booling = store.take_order(order)
         if booling:
             self.take_order()
         else:
             print(f'Заказ отменен из за занятости работников')
 
-    # сделать заказ
 
+  # забрать заказ
     def take_order(self):
         print(f'{self.__name} вы получили заказ? y/n')
         s = input()
@@ -33,8 +34,8 @@ class User:
         else:
             self.__order.status = "Заказ не выдан"
 
-    # забрать заказ
 
+    #адрес юзера
     def user_address(self):
         return self.__address
 

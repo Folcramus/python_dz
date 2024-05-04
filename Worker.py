@@ -3,6 +3,7 @@ import random
 from abc import ABC, abstractmethod
 
 
+# класс работника
 class Worker(ABC):
     __id: id
     __name: str
