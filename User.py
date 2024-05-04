@@ -20,6 +20,7 @@ class User:
             self.take_order()
         else:
             print(f'Заказ отменен из за занятости работников')
+            exit()
 
 
   # забрать заказ

@@ -67,7 +67,7 @@ class Courier(Worker):
 
     def fine_worker(self) -> bool:
         rand = random.randint(0, 100)
-        if rand >= 98:
+        if rand >= 1:
             self.__salary -= 300
             return True
         else:
@@ -91,6 +91,11 @@ class Courier(Worker):
         else:
             self.__is_working = True
 
+    def courier_name(self):
+        return self.__name
+
+    def courier_salary(self):
+        return self.__salary
     def __init__(self, id: int, name: str, type: str | None, time=1):
         self.__id = id
         self.__name = name
@@ -143,6 +148,7 @@ class Storekeeper(Worker):
 
     def worker_is_empl(self) -> bool:
         return self.__is_empl
+
 
     def worker_is_working(self):
         if self.__is_working:

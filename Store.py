@@ -71,7 +71,7 @@ class Store:
                     print(order)
                     return True
                 else:
-                    print(f'курьеру {courier.name} назначен штраф')
+                    print(f'курьеру {courier.courier_name()} назначен штраф: зарплата {courier.courier_salary()}')
 
     def update_stocks(self, item: Item, count: int):
 

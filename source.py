@@ -34,8 +34,8 @@ items_store = [Item("Молоко", 1, 1, 120, 0), Item("Хлеб", 2, 2, 12, 34
 
 workers = [Courier(0, "Антон", None, None), Courier(1, "Георгий", None, None),
            Storekeeper(2, "Анатолий", None, None)]
-workers[0].get_shift(120)
-workers[2].get_shift(678)
+workers[0].get_shift(30)
+workers[2].get_shift(31)
 time1 = datetime.now()
 curr_time = time1.strftime("%I:%M%p")
 
